@@ -1,4 +1,3 @@
-// Boilerplate Code for Virtual Assistant API
 const express = require('express');
 const app = express();
 
@@ -29,10 +28,42 @@ Example Responses:
     "welcomeMessage": "Hello, John! Welcome to our assistant app!",
     "dayMessage": "Have a wonderful day!"
   }
-
-Add the required logic below to complete the API.
 */
 
+// Endpoint to provide personalized greeting and day-specific message
+app.get('/assistant/greet', (req, res) => {
+    const name = req.query.name; // Extract 'name' from query parameters
+
+    // Validate the name parameter
+    if (!name) {
+        return res.status(400).json({
+            error: "Missing 'name' query parameter. Please provide a name!"
+        });
+    }
+
+    // Get the current day of the week
+    const daysOfWeek = [
+        "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+    ];
+    const currentDay = new Date().getDay(); // Returns 0 (Sunday) to 6 (Saturday)
+    const currentDayName = daysOfWeek[currentDay];
+
+    // Create day-specific cheerful messages
+    let dayMessage = "Have a wonderful day!";
+    if (currentDayName === "Monday") {
+        dayMessage = "Happy Monday! Start your week with energy!";
+    } else if (currentDayName === "Friday") {
+        dayMessage = "It's Friday! The weekend is near!";
+    }
+
+    // Send the JSON response
+    res.json({
+        welcomeMessage: `Hello, ${name}! Welcome to our assistant app!`,
+        dayMessage: dayMessage
+    });
+});
+
+// Start the server
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Virtual Assistant API is running on http://localhost:${PORT}`);
